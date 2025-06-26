@@ -1,0 +1,485 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 262.1 83.3% 57.8%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 262.1 83.3% 57.8%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 262.1 83.3% 57.8%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 262.1 83.3% 57.8%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+/* Enhanced scrollbar with smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+::-webkit-scrollbar-corner {
+  background: hsl(var(--muted));
+}
+
+/* Smooth scroll for all scrollable elements */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced scroll effects for modals and containers */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Gradient text animations */
+.gradient-text {
+  background: linear-gradient(45deg, #8b5cf6, #3b82f6, #06b6d4, #10b981);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-xy 6s ease infinite;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced button hover effects */
+.btn-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dark .btn-hover:hover {
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Neon glow effects */
+.neon-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.neon-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Loading animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Light mode improvements */
+.light-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.light-border {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced card styles for light mode */
+.card-enhanced {
+  transition: all 0.2s ease-in-out;
+}
+
+.card-enhanced:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-enhanced:hover {
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.05);
+}
+
+/* Demo badge styles */
+.demo-badge {
+  background: linear-gradient(45deg, #f59e0b, #f97316);
+  color: white;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: pulse 2s infinite;
+  display: inline-flex;
+  align-items: center;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Light theme text color fixes */
+.light .text-foreground {
+  color: hsl(222.2 84% 4.9%) !important;
+}
+
+.light button {
+  color: inherit;
+}
+
+/* Ensure proper contrast in light mode */
+.light .text-muted-foreground {
+  color: hsl(215.4 16.3% 46.9%) !important;
+}
+
+/* Fix explore button text in light mode */
+.light [data-theme="light"] button,
+.light button:not(.bg-gradient-to-r):not(.demo-badge) {
+  color: hsl(222.2 84% 4.9%);
+}
+
+/* Ensure neon buttons maintain their styling */
+.light button.bg-gradient-to-r {
+  color: white !important;
+}
+
+/* Fix outline buttons in light mode */
+.light button[class*="outline"] {
+  color: hsl(222.2 84% 4.9%) !important;
+  border-color: hsl(214.3 31.8% 91.4%);
+}
+
+.light button[class*="outline"]:hover {
+  background-color: hsl(210 40% 96%);
+  color: hsl(222.2 84% 4.9%) !important;
+}
+
+/* Enhanced Like Button Styling */
+.like-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.like-button.liked {
+  color: #ef4444 !important; /* Red color for liked state */
+  transform: scale(1.1);
+}
+
+.like-button.liked .heart-icon {
+  fill: #ef4444;
+  color: #ef4444;
+}
+
+.like-button:hover {
+  transform: scale(1.05);
+}
+
+.like-button:active {
+  transform: scale(0.95);
+}
+
+/* Enhanced Bookmark/Save Button Styling */
+.bookmark-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.bookmark-button.bookmarked {
+  color: #3b82f6 !important; /* Blue color for light theme */
+  transform: scale(1.1);
+}
+
+.dark .bookmark-button.bookmarked {
+  color: #ffffff !important; /* White color for dark theme */
+}
+
+.bookmark-button.bookmarked .bookmark-icon {
+  fill: #3b82f6;
+  color: #3b82f6;
+}
+
+.dark .bookmark-button.bookmarked .bookmark-icon {
+  fill: #ffffff;
+  color: #ffffff;
+}
+
+.bookmark-button:hover {
+  transform: scale(1.05);
+}
+
+.bookmark-button:active {
+  transform: scale(0.95);
+}
+
+/* Smooth animations for interactions */
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.3); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.3); }
+  70% { transform: scale(1); }
+}
+
+.like-button.liked .heart-icon {
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+@keyframes bookmarkSave {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.bookmark-button.bookmarked .bookmark-icon {
+  animation: bookmarkSave 0.4s ease-in-out;
+}
+
+/* Enhanced modal scroll styling */
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Responsive scroll improvements */
+@media (max-width: 768px) {
+  .scroll-container {
+    scrollbar-width: none;
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Enhanced focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Enhanced warning banner styling */
+.warning-banner {
+  background: linear-gradient(135deg, #fef3c7, #fed7aa);
+  border: 2px solid #f59e0b;
+  animation: warningPulse 2s ease-in-out infinite;
+}
+
+.dark .warning-banner {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 146, 60, 0.1));
+  border: 2px solid #f59e0b;
+}
+
+@keyframes warningPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+  }
+}
+
+/* Enhanced video generation button styling */
+.video-generate-button {
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.video-generate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  background-size: 150% 150%;
+}
+
+.video-generate-button:active {
+  transform: translateY(0);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Disabled state for video generation */
+.video-generate-button:disabled {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  animation: none;
+}
+
+/* Enhanced responsive design */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .modal-content {
+    max-height: 85vh;
+    margin: 1rem;
+  }
+}
+
+/* Improved accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Enhanced loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--accent)) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
