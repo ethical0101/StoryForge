@@ -309,10 +309,21 @@ export function Navbar() {
           <div className="text-center">
             <div className="w-24 h-24 mx-auto mb-4 overflow-hidden border-4 rounded-full border-gradient-to-br from-purple-600 to-blue-600">
               <img
-                src="/Assets/profile-2.jpg"
+                src="https://lh3.googleusercontent.com/d/1qk5_k64IQmJVJRHGC7kmXUXiOBmed9oa"
                 alt="Kommi Druthendra"
                 className="object-cover w-full h-full"
+                onError={(e) => {
+                  // Hide the broken image and show fallback
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
               />
+              <div
+                className="items-center justify-center hidden w-full h-full text-2xl font-bold text-white rounded-full bg-gradient-to-br from-purple-600 to-blue-600"
+              >
+                KD
+              </div>
             </div>
             <h3 className="mb-2 text-3xl font-bold">KOMMI DRUTHENDRA</h3>
             <p className="text-lg text-muted-foreground">Full Stack Developer & AI Enthusiast</p>
