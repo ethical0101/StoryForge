@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, Sparkles, AlertCircle } from 'lucide-react'
@@ -14,35 +14,47 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{email?: string, password?: string}>({})
-  
-  const { signIn } = useAuth()
+
+  const { signIn, isAuthenticated, loading: authLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   const from = location.state?.from?.pathname || '/dashboard'
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, authLoading, navigate])
+
+  // Don't render if user is already authenticated
+  if (isAuthenticated) {
+    return null
+  }
 
   const validateForm = () => {
     const newErrors: {email?: string, password?: string} = {}
-    
+
     if (!email.trim()) {
       newErrors.email = 'Email is required'
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Please enter a valid email'
     }
-    
+
     if (!password) {
       newErrors.password = 'Password is required'
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters'
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -52,18 +64,18 @@ export function Login() {
 
     try {
       await signIn(email, password)
-      
+
       // Show success message
       toast.success('Welcome back!')
-      
+
       // Small delay to show the success message
       setTimeout(() => {
         navigate(from, { replace: true })
       }, 1000)
-      
+
     } catch (error: any) {
       console.error('Login error:', error)
-      
+
       if (error.message?.includes('Invalid login credentials')) {
         toast.error('Invalid email or password. Please check your credentials.')
       } else if (error.message?.includes('Email not confirmed')) {
@@ -81,7 +93,7 @@ export function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 px-4">
       <div className="absolute inset-0 bg-black/20" />
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -98,7 +110,7 @@ export function Login() {
             <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
             <p className="text-muted-foreground">Sign in to your StoryForge Pro account</p>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
@@ -124,7 +136,7 @@ export function Login() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input

@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { 
-  Sparkles, 
-  Mic, 
-  Video, 
-  BookOpen, 
-  Users, 
-  Zap, 
+import {
+  Sparkles,
+  Mic,
+  Video,
+  BookOpen,
+  Users,
+  Zap,
   ArrowRight,
   Star,
   CheckCircle,
@@ -19,12 +19,24 @@ import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 export function Landing() {
-  const { enterDemoMode } = useAuth()
+  const { enterDemoMode, isAuthenticated, loading } = useAuth()
   const navigate = useNavigate()
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, loading, navigate])
 
   const handleTryDemo = () => {
     enterDemoMode()
     navigate('/dashboard')
+  }
+
+  // Don't render landing page if user is authenticated
+  if (isAuthenticated) {
+    return null
   }
 
   const features = [
@@ -75,7 +87,7 @@ export function Landing() {
     },
     {
       name: 'Emily Rodriguez',
-      role: 'Educator',  
+      role: 'Educator',
       content: 'My students love creating stories with StoryForge Pro. The platform makes storytelling accessible and fun for everyone.',
       rating: 5
     }
@@ -107,7 +119,7 @@ export function Landing() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto"
             >
-              Create compelling stories with AI, bring them to life with realistic voices, 
+              Create compelling stories with AI, bring them to life with realistic voices,
               and share them with video narration - all in one powerful platform.
             </motion.p>
 
@@ -118,8 +130,8 @@ export function Landing() {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <Link to="/auth/register">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   variant="neon"
                   className="text-lg px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-purple-500/25"
                 >
@@ -127,8 +139,8 @@ export function Landing() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="demo"
                 onClick={handleTryDemo}
                 className="text-lg px-8 py-4"
@@ -137,8 +149,8 @@ export function Landing() {
                 Try Demo
               </Button>
               <Link to="/explore">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   variant="outline"
                   className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-gray-900"
                 >
@@ -164,12 +176,12 @@ export function Landing() {
             <motion.div
               key={i}
               className="absolute w-2 h-2 bg-white/20 rounded-full"
-              initial={{ 
+              initial={{
                 x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
                 y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
                 opacity: 0
               }}
-              animate={{ 
+              animate={{
                 y: -100,
                 opacity: [0, 1, 0]
               }}
@@ -283,7 +295,7 @@ export function Landing() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/auth/register">
-                <Button 
+                <Button
                   size="lg"
                   className="text-lg px-8 py-4 bg-white text-purple-600 hover:bg-gray-100"
                 >
@@ -291,7 +303,7 @@ export function Landing() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button 
+              <Button
                 size="lg"
                 variant="demo"
                 onClick={handleTryDemo}

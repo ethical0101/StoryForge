@@ -13,7 +13,8 @@ import {
   AlertTriangle,
   BarChart3,
   UserPlus,
-  Crown
+  Crown,
+  Mail
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
@@ -23,7 +24,7 @@ import { Input } from '../components/ui/Input'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase, Story, Profile } from '../lib/supabase'
 import { formatDate, truncateText } from '../lib/utils'
-import { makeUserAdmin, removeAdminRole, listAdminUsers, AdminUser } from '../lib/admin'
+import { makeUserAdmin, removeAdminRole, listAdminUsers } from '../lib/admin'
 import toast from 'react-hot-toast'
 
 export function Admin() {
@@ -38,28 +39,17 @@ export function Admin() {
   })
   const [users, setUsers] = useState<Profile[]>([])
   const [stories, setStories] = useState<Story[]>([])
-  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
+  const [adminUsers, setAdminUsers] = useState<Profile[]>([])
   const [newAdminEmail, setNewAdminEmail] = useState('')
   const [actionModal, setActionModal] = useState<{
     isOpen: boolean
     type: 'ban' | 'delete' | 'feature' | 'make-admin' | 'remove-admin' | null
-    item: Profile | Story | AdminUser | null
+    item: any
   }>({
     isOpen: false,
     type: null,
     item: null
   })
-
-  // Move hooks before conditional returns
-  useEffect(() => {
-    fetchAdminData()
-  }, [])
-
-  useEffect(() => {
-    if (activeTab === 'admins') {
-      fetchAdminUsers()
-    }
-  }, [activeTab])
 
   // Redirect if not admin
   if (profile?.role !== 'admin') {
@@ -518,8 +508,8 @@ export function Admin() {
                 <CardContent>
                   <div className="flex gap-4">
                     <Input
-                      type="text"
-                      placeholder="Enter email address or username"
+                      type="email"
+                      placeholder="Enter user email address"
                       value={newAdminEmail}
                       onChange={(e) => setNewAdminEmail(e.target.value)}
                       className="flex-1"
@@ -530,7 +520,7 @@ export function Admin() {
                     </Button>
                   </div>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Enter the email address or username of a user to promote them to admin.
+                    Enter the email address of a registered user to promote them to admin.
                   </p>
                 </CardContent>
               </Card>

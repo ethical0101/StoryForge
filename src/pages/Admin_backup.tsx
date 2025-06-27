@@ -6,6 +6,8 @@ import {
   BookOpen,
   Flag,
   TrendingUp,
+  Database,
+  Settings,
   Eye,
   Trash2,
   Ban,
@@ -13,7 +15,8 @@ import {
   AlertTriangle,
   BarChart3,
   UserPlus,
-  Crown
+  Crown,
+  Mail
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
@@ -23,7 +26,7 @@ import { Input } from '../components/ui/Input'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase, Story, Profile } from '../lib/supabase'
 import { formatDate, truncateText } from '../lib/utils'
-import { makeUserAdmin, removeAdminRole, listAdminUsers, AdminUser } from '../lib/admin'
+import { makeUserAdmin, removeAdminRole, listAdminUsers, getUserRole } from '../lib/admin'
 import toast from 'react-hot-toast'
 
 export function Admin() {
@@ -38,28 +41,17 @@ export function Admin() {
   })
   const [users, setUsers] = useState<Profile[]>([])
   const [stories, setStories] = useState<Story[]>([])
-  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
-  const [newAdminEmail, setNewAdminEmail] = useState('')
+  const [adminUsers, setAdminUsers] = useState<Profile[]>([])
+  const [selectedItem, setSelectedItem] = useState<any>(null)
   const [actionModal, setActionModal] = useState<{
     isOpen: boolean
     type: 'ban' | 'delete' | 'feature' | 'make-admin' | 'remove-admin' | null
-    item: Profile | Story | AdminUser | null
+    item: any
   }>({
     isOpen: false,
     type: null,
     item: null
   })
-
-  // Move hooks before conditional returns
-  useEffect(() => {
-    fetchAdminData()
-  }, [])
-
-  useEffect(() => {
-    if (activeTab === 'admins') {
-      fetchAdminUsers()
-    }
-  }, [activeTab])
 
   // Redirect if not admin
   if (profile?.role !== 'admin') {
@@ -77,12 +69,6 @@ export function Admin() {
   useEffect(() => {
     fetchAdminData()
   }, [])
-
-  useEffect(() => {
-    if (activeTab === 'admins') {
-      fetchAdminUsers()
-    }
-  }, [activeTab])
 
   async function fetchAdminData() {
     try {
@@ -105,21 +91,19 @@ export function Admin() {
       if (usersResponse.data) setUsers(usersResponse.data.slice(0, 10))
       if (storiesResponse.data) setStories(storiesResponse.data.slice(0, 10))
 
+      // Fetch admin users
+      const { data: adminData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('role', 'admin')
+
+      setAdminUsers(adminData || [])
+
     } catch (error) {
       console.error('Error fetching admin data:', error)
       toast.error('Failed to load admin data')
     } finally {
       setLoading(false)
-    }
-  }
-
-  async function fetchAdminUsers() {
-    try {
-      const admins = await listAdminUsers()
-      setAdminUsers(admins)
-    } catch (error) {
-      console.error('Error fetching admin users:', error)
-      toast.error('Failed to load admin users')
     }
   }
 
@@ -167,29 +151,9 @@ export function Admin() {
       }
 
       setActionModal({ isOpen: false, type: null, item: null })
-      fetchAdminUsers() // Refresh admin users list
+      fetchAdminData() // Refresh admin users list
     } catch (error) {
       toast.error(`Failed to ${action} user`)
-    }
-  }
-
-  const handlePromoteByEmail = async () => {
-    if (!newAdminEmail.trim()) {
-      toast.error('Please enter an email address')
-      return
-    }
-
-    try {
-      const success = await makeUserAdmin(newAdminEmail)
-      if (success) {
-        toast.success(`Successfully promoted ${newAdminEmail} to admin`)
-        setNewAdminEmail('')
-        fetchAdminUsers() // Refresh lists
-      } else {
-        toast.error('Failed to promote user. User may not exist.')
-      }
-    } catch (error) {
-      toast.error('Error promoting user to admin')
     }
   }
 
@@ -397,7 +361,7 @@ export function Admin() {
                       <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600">
                           {user.avatar_url ? (
-                            <img src={user.avatar_url} alt={user.full_name || ''} className="object-cover w-full h-full rounded-full" />
+                            <img src={user.avatar_url} alt={user.full_name} className="object-cover w-full h-full rounded-full" />
                           ) : (
                             <Users className="w-5 h-5 text-white" />
                           )}
@@ -413,19 +377,6 @@ export function Admin() {
                         }`}>
                           {user.role}
                         </span>
-                        {user.role !== 'admin' && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setActionModal({
-                              isOpen: true,
-                              type: 'make-admin',
-                              item: user
-                            })}
-                          >
-                            <Crown className="w-4 h-4" />
-                          </Button>
-                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -506,88 +457,45 @@ export function Admin() {
           )}
 
           {activeTab === 'admins' && (
-            <div className="space-y-6">
-              {/* Promote User to Admin */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserPlus className="w-5 h-5" />
-                    Promote User to Admin
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-4">
-                    <Input
-                      type="text"
-                      placeholder="Enter email address or username"
-                      value={newAdminEmail}
-                      onChange={(e) => setNewAdminEmail(e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button onClick={handlePromoteByEmail} disabled={!newAdminEmail.trim()}>
-                      <Crown className="w-4 h-4 mr-2" />
-                      Make Admin
-                    </Button>
-                  </div>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Enter the email address or username of a user to promote them to admin.
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Current Admins */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Current Administrators</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {adminUsers.map((user) => (
-                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600">
-                            {user.avatar_url ? (
-                              <img src={user.avatar_url} alt={user.full_name || ''} className="object-cover w-full h-full rounded-full" />
-                            ) : (
-                              <Crown className="w-5 h-5 text-white" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-medium">{user.full_name}</p>
-                            <p className="text-sm text-muted-foreground">@{user.username}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-1 text-xs text-purple-800 bg-purple-100 rounded-full">
-                            Administrator
-                          </span>
-                          {profile?.id !== user.id && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setActionModal({
-                                isOpen: true,
-                                type: 'remove-admin',
-                                item: user
-                              })}
-                            >
-                              <Ban className="w-4 h-4" />
-                            </Button>
+            <Card>
+              <CardHeader>
+                <CardTitle>Admin Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {adminUsers.map((user) => (
+                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600">
+                          {user.avatar_url ? (
+                            <img src={user.avatar_url} alt={user.full_name} className="object-cover w-full h-full rounded-full" />
+                          ) : (
+                            <Users className="w-5 h-5 text-white" />
                           )}
                         </div>
+                        <div>
+                          <p className="font-medium">{user.full_name}</p>
+                          <p className="text-sm text-muted-foreground">@{user.username}</p>
+                        </div>
                       </div>
-                    ))}
-                    {adminUsers.length === 0 && (
-                      <div className="py-8 text-center">
-                        <Crown className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="mb-2 text-lg font-semibold">No administrators found</h3>
-                        <p className="text-muted-foreground">Use the form above to promote users to admin.</p>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setActionModal({
+                            isOpen: true,
+                            type: 'remove-admin',
+                            item: user
+                          })}
+                        >
+                          <Ban className="w-4 h-4" />
+                        </Button>
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           )}
         </motion.div>
 
@@ -595,16 +503,11 @@ export function Admin() {
         <Modal
           isOpen={actionModal.isOpen}
           onClose={() => setActionModal({ isOpen: false, type: null, item: null })}
-          title={`Confirm ${actionModal.type?.replace('-', ' ')}`}
+          title={`Confirm ${actionModal.type}`}
         >
           <div className="space-y-4">
             <p>
-              Are you sure you want to {actionModal.type?.replace('-', ' ')} this {actionModal.item?.title ? 'story' : 'user'}?
-              {actionModal.type === 'remove-admin' && (
-                <span className="block mt-2 text-sm text-red-600">
-                  This will remove their administrator privileges.
-                </span>
-              )}
+              Are you sure you want to {actionModal.type} this {actionModal.item?.title ? 'story' : 'user'}?
             </p>
             <div className="flex gap-2">
               <Button
