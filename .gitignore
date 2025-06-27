@@ -24,6 +24,11 @@ out
 .env.test.local
 .env.production.local
 
+# Private/sensitive files
+admin-credentials.txt
+*-private.sql
+*-sensitive.*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

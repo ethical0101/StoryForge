@@ -75,10 +75,6 @@ export function Admin() {
   }
 
   useEffect(() => {
-    fetchAdminData()
-  }, [])
-
-  useEffect(() => {
     if (activeTab === 'admins') {
       fetchAdminUsers()
     }

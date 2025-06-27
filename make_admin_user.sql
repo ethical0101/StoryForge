@@ -1,4 +1,20 @@
--- SQL Script to Make kommidruthendra2005@gmail.com an Admin User
+-- SQL Script to Make your admin email an Admin User
+-- Run this in your Supabase SQL Editor
+
+-- First, let's check if the user exists and get their ID
+SELECT id, email, raw_user_meta_data
+FROM auth.users
+WHERE email = 'your-admin-email@gmail.com';
+
+-- Update the user's profile to admin role
+-- This will work if the user has already registered
+UPDATE public.profiles
+SET role = 'admin'
+WHERE id = (
+  SELECT id
+  FROM auth.users
+  WHERE email = 'your-admin-email@gmail.com'
+);Make kommidruthendra2005@gmail.com an Admin User
 -- Run this in your Supabase SQL Editor
 
 -- First, let's check if the user exists and get their ID

@@ -1,16 +1,16 @@
--- SQL Script to Create Admin User for kommidruthendra2005@gmail.com
+-- SQL Script to Create Admin User for your admin email
 -- Run this in your Supabase SQL Editor
 
 -- First, check if the user exists in auth.users table
 SELECT id, email, created_at
 FROM auth.users
-WHERE email = 'kommidruthendra2005@gmail.com';
+WHERE email = 'your-admin-email@gmail.com';
 
 -- Check if they already have a profile
 SELECT p.id, p.username, p.full_name, p.role, u.email
 FROM public.profiles p
 RIGHT JOIN auth.users u ON p.id = u.id
-WHERE u.email = 'kommidruthendra2005@gmail.com';
+WHERE u.email = 'your-admin-email@gmail.com';
 
 -- If user exists in auth.users but no profile, create one
 INSERT INTO public.profiles (
@@ -26,16 +26,16 @@ INSERT INTO public.profiles (
 )
 SELECT
   u.id,
-  'kommidruthendra2005',
-  COALESCE(u.raw_user_meta_data->>'full_name', 'Kommi Druthendra'),
+  'your-username',
+  COALESCE(u.raw_user_meta_data->>'full_name', 'Your Full Name'),
   'admin',
   0,
   0,
   0,
   'premium',
-  'https://drive.google.com/file/d/1aZ5YKGYvI9TfR7HExbLCz7vWP2m8iqCO/view?usp=sharing'
+  'https://your-avatar-url.jpg'
 FROM auth.users u
-WHERE u.email = 'kommidruthendra2005@gmail.com'
+WHERE u.email = 'your-admin-email@gmail.com'
   AND NOT EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = u.id);
 
 -- If profile already exists, just update the role to admin
@@ -45,7 +45,7 @@ SET role = 'admin',
 WHERE id = (
   SELECT id
   FROM auth.users
-  WHERE email = 'kommidruthendra2005@gmail.com'
+  WHERE email = 'your-admin-email@gmail.com'
 );
 
 -- Verify the result - show user with their auth info
@@ -60,7 +60,7 @@ SELECT
   p.created_at as profile_created
 FROM auth.users u
 LEFT JOIN public.profiles p ON u.id = p.id
-WHERE u.email = 'kommidruthendra2005@gmail.com';
+WHERE u.email = 'your-admin-email@gmail.com';
 
 -- Show all admin users
 SELECT
