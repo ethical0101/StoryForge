@@ -17,7 +17,7 @@ The admin panel gives you access to:
 - Recent activity feed
 - System health monitoring
 
-#### 👥 **Users Tab** 
+#### 👥 **Users Tab**
 - View all registered users
 - Promote users to admin
 - Ban/unban users
